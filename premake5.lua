@@ -1,6 +1,7 @@
 project "GLFW"
 	kind "StaticLib"
 	language "C"
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -19,7 +20,6 @@ project "GLFW"
 
 	filter "system:windows"
 		systemversion "latest"
-		staticruntime "on"
 		
 		files {
 			"src/win32_init.c",
@@ -38,5 +38,17 @@ project "GLFW"
 			"_CRT_SECURE_NO_WARNINGS"
 		}
 		
-		filter { "system:windows", "configurations:Release" }
-			buildoptions "/MT"
+		filter "configurations:Debug"
+			defines "CUSTOM_DEBUG"
+			runtime "Debug"
+			buildoptions "/MDd"
+			symbols "on"
+			linkoptions { "/NODEFAULTLIB:LIBCMT" }
+
+		filter "configurations:Release"
+			defines "CUSTOM_RELEASE"
+			runtime "Release"
+			buildoptions "/MD"
+			symbols "on"
+			optimize "on"
+			linkoptions { "/NODEFAULTLIB:LIBCMT" }
